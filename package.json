@@ -1,0 +1,26 @@
+{
+  "name": "covid19-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "scripts/loadData.js",
+  "scripts": {
+    "load": "node ./scripts/loadData.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thechicagoreporter/il-covid19-api.git"
+  },
+  "author": "David Eads",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thechicagoreporter/il-covid19-api/issues"
+  },
+  "homepage": "https://github.com/thechicagoreporter/il-covid19-api#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "graphqurl": "^0.3.3",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {}
+}
