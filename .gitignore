@@ -1,0 +1,21 @@
+#  Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# .tfvars files
+*.tfvars
+
+# OSX
+.DS_Store
+
+# Config
+.env
+
+# Node modules
+node_modules/
+
+# Data sources
+data/
