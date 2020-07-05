@@ -1,0 +1,7 @@
+version: 2
+endpoint: https://covid19-api.reporterdata.com
+admin_secret: tcr-covid19-secretz
+metadata_directory: metadata
+actions:
+  kind: synchronous
+  handler_webhook_baseurl: http://localhost:3000

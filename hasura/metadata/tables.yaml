@@ -1,0 +1,38 @@
+- table:
+    schema: public
+    name: zipcode_date_counts
+- table:
+    schema: public
+    name: zipcode_date_race_demographics
+- table:
+    schema: public
+    name: zipcodes
+  object_relationships:
+  - name: census_geo
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: zipcodes_geo
+        column_mapping:
+          zipcode: zipcode
+  array_relationships:
+  - name: date_counts
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: zipcode_date_counts
+        column_mapping:
+          zipcode: zipcode
+  - name: date_race_demographics
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: zipcode_date_race_demographics
+        column_mapping:
+          zipcode: zipcode
+- table:
+    schema: public
+    name: zipcodes_geo
