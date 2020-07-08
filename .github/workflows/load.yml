@@ -3,7 +3,7 @@ name: Load latest ZIP data
 on:
   # trigger every five minutes
   schedule:
-    - cron: '*/2 * * * *'
+    - cron: '*/5 * * * *'
 
 jobs:
   build:
