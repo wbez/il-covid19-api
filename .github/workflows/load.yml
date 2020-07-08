@@ -1,9 +1,9 @@
-name: Update s3 data with IDPH scraped data
+name: Load latest ZIP data
 
 on:
   # trigger every five minutes
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/1 * * * *'
 
 jobs:
   build:
@@ -21,3 +21,5 @@ jobs:
     - name: Run loader
       run: |
         npm run load_zips
+      env:
+        HASURA_API_SECRET: ${{ secrets.HASURA_API_SECRET }}
