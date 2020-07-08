@@ -162,11 +162,7 @@ async function loadDay(zipData) {
     .catch((error) => console.error(error));    
 }
 
-fetch('https://www.dph.illinois.gov/sitefiles/COVIDZip.json').then(response => response.text()).then(text => { console.log('hello world'); console.log(text); });
-
-// fetch(sourceURL)
-//     .then(response => response.json())
-//     .then(loadDay);
+fetch(sourceURL).then(response => response.json()).then(loadDay);
 
 // async function loadFile(file) {
 //     const data = fs.readFileSync(path.join(directoryPath, file), 'utf-8')
