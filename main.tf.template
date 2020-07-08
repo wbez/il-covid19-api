@@ -1,0 +1,11 @@
+module "covid19_api" {
+  source                    = "./terraform-aws-hasura"
+  domain                    = "reporterdata.com"
+  hasura_subdomain          = "covid19-api"
+  hasura_admin_secret       = ""
+  rds_db_name               = ""
+  rds_password              = ""
+  rds_username              = ""
+  ecs_cluster_name          = ""
+  create_iam_service_linked_role = false
+}
