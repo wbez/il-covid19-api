@@ -1,0 +1,25 @@
+name: Load latest ZIP data, try 2
+
+on:
+  # trigger every five minutes
+  schedule:
+    - cron: '*/2 * * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up NodeJS                                        
+      uses: actions/setup-node@v2-beta
+      with:
+        node-version: '12'                                      
+    - name: Install dependencies
+      run: |
+        npm install
+    - name: Run loader
+      run: |
+        npm run load_zips
+      env:
+        HASURA_API_SECRET: ${{ secrets.HASURA_API_SECRET }}
