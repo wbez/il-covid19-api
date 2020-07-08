@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  build:
+  load:
     runs-on: ubuntu-latest
 
     steps:
