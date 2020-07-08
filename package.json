@@ -4,7 +4,8 @@
   "description": "",
   "main": "scripts/loadData.js",
   "scripts": {
-    "load": "node ./scripts/loadData.js",
+    "load_zip_geo": "node ./scripts/loadZIPCodeGeojson.js",
+    "load_zips": "node ./scripts/loadZIPCodes.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,7 +21,9 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "graphqurl": "^0.3.3",
-    "node-fetch": "^2.6.0"
+    "lodash": "^4.17.15",
+    "node-fetch": "^2.6.0",
+    "slugify": "^1.4.4"
   },
   "devDependencies": {}
 }
