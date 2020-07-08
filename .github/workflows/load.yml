@@ -4,6 +4,9 @@ on:
   # trigger every five minutes
   schedule:
     - cron: '*/5 * * * *'
+  push:
+    branches:
+      - master
 
 jobs:
   build:
