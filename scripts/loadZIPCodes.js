@@ -1,4 +1,5 @@
 const dotenv = require('dotenv');
+const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
 const slugify = require("slugify")
@@ -6,6 +7,8 @@ const { query } = require('graphqurl');
 const { unzip } = require('lodash');
 
 dotenv.config();
+
+const sourceURL = 'https://www.dph.illinois.gov/sitefiles/COVIDZip.json'
 
 const directoryPath = path.join('./data/zipcodes');
 
@@ -159,22 +162,26 @@ async function loadDay(zipData) {
     .catch((error) => console.error(error));    
 }
 
-async function loadFile(file) {
-    const data = fs.readFileSync(path.join(directoryPath, file), 'utf-8')
-    const parsedData = JSON.parse(data);
-    const keys = Array.from(Object.keys(parsedData));
-    let zipData;
-    if (keys.includes("2020-06-17")) { // Terrible hack here to sniff different data objects
-        zipData = Array.from(Object.values(parsedData))
-    } else {
-        zipData = [parsedData]
-    }
-    for (const day of zipData) {
-        await loadDay(day);
-    }
-}
+fetch(sourceURL)
+    .then(response => response.json())
+    .then(loadDay);
 
-fs.readdir(directoryPath, (err, files) => {
-    if (err) throw err;
-    files.forEach(loadFile);
-})
+// async function loadFile(file) {
+//     const data = fs.readFileSync(path.join(directoryPath, file), 'utf-8')
+//     const parsedData = JSON.parse(data);
+//     const keys = Array.from(Object.keys(parsedData));
+//     let zipData;
+//     if (keys.includes("2020-06-17")) { // Terrible hack here to sniff different data objects
+//         zipData = Array.from(Object.values(parsedData))
+//     } else {
+//         zipData = [parsedData]
+//     }
+//     for (const day of zipData) {
+//         await loadDay(day);
+//     }
+// }
+
+// fs.readdir(directoryPath, (err, files) => {
+//     if (err) throw err;
+//     files.forEach(loadFile);
+// })
