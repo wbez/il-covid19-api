@@ -162,8 +162,7 @@ async function loadDay(zipData) {
     .catch((error) => console.error(error));    
 }
 
-console.log('ahhh CI is never fun');
-fetch('https://npr.org').then(response => response.text()).then(text => { console.log('hello world'); console.log(text); });
+fetch('https://www.dph.illinois.gov/sitefiles/COVIDZip.json').then(response => response.text()).then(text => { console.log('hello world'); console.log(text); });
 
 // fetch(sourceURL)
 //     .then(response => response.json())
