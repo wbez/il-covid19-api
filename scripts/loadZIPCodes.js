@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 const fetch = require('node-fetch');
-const fs = require('fs');
-const path = require('path');
+// const fs = require('fs');
+// const path = require('path');
 const slugify = require("slugify")
 const { query } = require('graphqurl');
 const { unzip } = require('lodash');
@@ -10,7 +10,7 @@ dotenv.config();
 
 const sourceURL = 'https://www.dph.illinois.gov/sitefiles/COVIDZip.json'
 
-const directoryPath = path.join('./data/zipcodes');
+// const directoryPath = path.join('./data/zipcodes');
 
 const APIConfig = {
     endpoint: process.env.HASURA_API_ENDPOINT,
