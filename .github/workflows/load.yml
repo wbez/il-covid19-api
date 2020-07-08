@@ -1,9 +1,9 @@
 name: Load latest ZIP data
 
 on:
-  # trigger every five minutes
+  # Trigger at 15 past, 35 page, and 45 past
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '15,35,45 * * * *'
   push:
     branches:
       - master
