@@ -220,6 +220,14 @@ resource "aws_rds_cluster" "hasura_aurora" {
   db_subnet_group_name   = aws_db_subnet_group.hasura.name
   skip_final_snapshot    = true
   final_snapshot_identifier   = "hasuraaurora"
+
+  scaling_configuration {
+    auto_pause               = true
+    max_capacity             = 2
+    min_capacity             = 2
+    seconds_until_auto_pause = 300
+    timeout_action           = "ForceApplyCapacityChange"
+  }
   lifecycle {
     prevent_destroy = false
   }
