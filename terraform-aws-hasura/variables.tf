@@ -26,7 +26,7 @@ variable "hasura_subdomain" {
 
 variable "hasura_version_tag" {
   description = "The hasura graphql engine version tag"
-  default     = "v1.2.2"
+  default     = "v1.3.0"
 }
 
 variable "hasura_admin_secret" {
