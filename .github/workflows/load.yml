@@ -26,4 +26,4 @@ jobs:
         npm run load_zips
       env:
         HASURA_API_SECRET: ${{ secrets.HASURA_API_SECRET }}
-        HASURA_API_ENDPOINT: https://covid19-api.reporterdata.com/v1/graphql
+        HASURA_API_ENDPOINT: https://covid19-api.grupovisual.org/v1/graphql
