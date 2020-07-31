@@ -218,6 +218,8 @@ resource "aws_rds_cluster" "hasura_aurora" {
   engine_mode            = "serverless"
   vpc_security_group_ids = [aws_security_group.hasura_rds.id]
   db_subnet_group_name   = aws_db_subnet_group.hasura.name
+  backup_retention_period = 7
+  snapshot_identifier    = "arn:aws:rds:us-east-2:647111127395:cluster-snapshot:covid-hasura-transfer-20200722"
   skip_final_snapshot    = true
   final_snapshot_identifier   = "hasuraaurora"
 
