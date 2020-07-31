@@ -28,25 +28,25 @@ geoQuery = `
 const data = fs.readFileSync(path.join(directoryPath, 'il-zcta.json'), 'utf-8')
 const parsedData = JSON.parse(data);
 
-function flattenCensusDemographics(accumulator, [category, demographics]) {
-    if (['Race', 'Population'].includes(category)) {
-        const categorySlug = slugify(category, { replacement: '', strict: true, lower: true });
-        Array.from(Object.entries(demographics)).forEach( ([demographic, values]) => {
-            const demographicSlug = slugify(demographic, { replacement: '', strict: true, lower: true });
-            const slug = `${categorySlug}_${demographicSlug}`;
-            accumulator[`${slug}_estimate`] = values.E;
-            accumulator[`${slug}_estimate_moe`] = values.M;
-            accumulator[`${slug}_pct`] = values.PE;
-            accumulator[`${slug}_pct_moe`] = values.PM;
-        })
-    }
-    return accumulator;
-}
+// function flattenCensusDemographics(accumulator, [category, demographics]) {
+//     if (['Race', 'Population'].includes(category)) {
+//         const categorySlug = slugify(category, { replacement: '', strict: true, lower: true });
+//         Array.from(Object.entries(demographics)).forEach( ([demographic, values]) => {
+//             const demographicSlug = slugify(demographic, { replacement: '', strict: true, lower: true });
+//             const slug = `${categorySlug}_${demographicSlug}`;
+//             accumulator[`${slug}_estimate`] = values.E;
+//             accumulator[`${slug}_estimate_moe`] = values.M;
+//             accumulator[`${slug}_pct`] = values.PE;
+//             accumulator[`${slug}_pct_moe`] = values.PM;
+//         })
+//     }
+//     return accumulator;
+// }
 
-const objects = parsedData.map(d => {
+const objects = parsedData.features.map(d => {
 
     // This is annoying!
-    const demographicsRow = Array.from(Object.entries(d.properties.census_demographics)).reduce(flattenCensusDemographics, {})
+    // const demographicsRow = Array.from(Object.entries(d.properties.census_demographics)).reduce(flattenCensusDemographics, {})
 
     return {
         geom: d.geometry,
@@ -55,7 +55,8 @@ const objects = parsedData.map(d => {
         county: d.properties.county,
         aland10: d.properties.ALAND10,
         awater10: d.properties.AWATER10,
-        ...demographicsRow
+        race: d.properties.census_demographics.Race,
+        population: d.properties.census_demographics.Population,
     }
 });
 
