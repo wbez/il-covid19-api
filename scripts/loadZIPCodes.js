@@ -1,23 +1,9 @@
-const dotenv = require('dotenv');
 const fetch = require('node-fetch');
-// const fs = require('fs');
-// const path = require('path');
 const slugify = require("slugify")
-const { query } = require('graphqurl');
+const { query } = require('../lib/api');
 const { unzip } = require('lodash');
 
-dotenv.config();
-
 const sourceURL = 'https://www.dph.illinois.gov/sitefiles/COVIDZip.json'
-
-// const directoryPath = path.join('./data/zipcodes');
-
-const APIConfig = {
-    endpoint: process.env.HASURA_API_ENDPOINT,
-    headers: {
-        'x-hasura-access-key': process.env.HASURA_API_SECRET
-    }
-}
 
 zipQuery = `
     mutation($zipcodes: [zipcodes_insert_input!]!,
@@ -156,13 +142,18 @@ async function loadDay(zipData) {
     return query({
         query: zipQuery,
         variables: { zipcodes, counts, raceCounts, genderCounts, ageCounts },
-        ...APIConfig
     })
     .then((response) => console.log(response))
     .catch((error) => console.error(error));    
 }
 
 fetch(sourceURL).then(response => response.json()).then(loadDay);
+
+// This needs to be option, eventually:
+
+// const fs = require('fs');
+// const path = require('path');
+// const directoryPath = path.join('./data/zipcodes');
 
 // async function loadFile(file) {
 //     const data = fs.readFileSync(path.join(directoryPath, file), 'utf-8')
