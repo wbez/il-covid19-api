@@ -70,7 +70,7 @@ variable "az_count" {
 
 variable "multi_az" {
   description = "Whether to deploy RDS and ECS in multi AZ mode or not"
-  default     = true
+  default     = false
 }
 
 variable "vpc_enable_dns_hostnames" {
