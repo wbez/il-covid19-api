@@ -47,6 +47,361 @@
       filter: {}
 - table:
     schema: public
+    name: state_age_counts
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - date
+      - count_unknown
+      - tested_unknown
+      - deaths_unknown
+      - count_less_than_20
+      - tested_less_than_20
+      - deaths_less_than_20
+      - count_20_to_29
+      - tested_20_to_29
+      - deaths_20_to_29
+      - count_30_to_39
+      - tested_30_to_39
+      - deaths_30_to_39
+      - count_40_to_49
+      - tested_40_to_49
+      - deaths_40_to_49
+      - count_50_to_59
+      - tested_50_to_59
+      - deaths_50_to_59
+      - count_60_to_69
+      - tested_60_to_69
+      - deaths_60_to_69
+      - count_70_to_79
+      - tested_70_to_79
+      - deaths_70_to_79
+      - count_80_or_more
+      - tested_80_or_more
+      - deaths_80_or_more
+      filter: {}
+- table:
+    schema: public
+    name: state_age_race_counts
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - date
+      - count_unknown_aian
+      - tested_unknown_aian
+      - deaths_unknown_aian
+      - count_less_than_20_aian
+      - tested_less_than_20_aian
+      - deaths_less_than_20_aian
+      - count_20_to_29_aian
+      - tested_20_to_29_aian
+      - deaths_20_to_29_aian
+      - count_30_to_39_aian
+      - tested_30_to_39_aian
+      - deaths_30_to_39_aian
+      - count_40_to_49_aian
+      - tested_40_to_49_aian
+      - deaths_40_to_49_aian
+      - count_50_to_59_aian
+      - tested_50_to_59_aian
+      - deaths_50_to_59_aian
+      - count_60_to_69_aian
+      - tested_60_to_69_aian
+      - deaths_60_to_69_aian
+      - count_70_to_79_aian
+      - tested_70_to_79_aian
+      - deaths_70_to_79_aian
+      - count_80_or_more_aian
+      - tested_80_or_more_aian
+      - deaths_80_or_more_aian
+      - count_unknown_asian
+      - tested_unknown_asian
+      - deaths_unknown_asian
+      - count_less_than_20_asian
+      - tested_less_than_20_asian
+      - deaths_less_than_20_asian
+      - count_20_to_29_asian
+      - tested_20_to_29_asian
+      - deaths_20_to_29_asian
+      - count_30_to_39_asian
+      - tested_30_to_39_asian
+      - deaths_30_to_39_asian
+      - count_40_to_49_asian
+      - tested_40_to_49_asian
+      - deaths_40_to_49_asian
+      - count_50_to_59_asian
+      - tested_50_to_59_asian
+      - deaths_50_to_59_asian
+      - count_60_to_69_asian
+      - tested_60_to_69_asian
+      - deaths_60_to_69_asian
+      - count_70_to_79_asian
+      - tested_70_to_79_asian
+      - deaths_70_to_79_asian
+      - count_80_or_more_asian
+      - tested_80_or_more_asian
+      - deaths_80_or_more_asian
+      - count_unknown_black
+      - tested_unknown_black
+      - deaths_unknown_black
+      - count_less_than_20_black
+      - tested_less_than_20_black
+      - deaths_less_than_20_black
+      - count_20_to_29_black
+      - tested_20_to_29_black
+      - deaths_20_to_29_black
+      - count_30_to_39_black
+      - tested_30_to_39_black
+      - deaths_30_to_39_black
+      - count_40_to_49_black
+      - tested_40_to_49_black
+      - deaths_40_to_49_black
+      - count_50_to_59_black
+      - tested_50_to_59_black
+      - deaths_50_to_59_black
+      - count_60_to_69_black
+      - tested_60_to_69_black
+      - deaths_60_to_69_black
+      - count_70_to_79_black
+      - tested_70_to_79_black
+      - deaths_70_to_79_black
+      - count_80_or_more_black
+      - tested_80_or_more_black
+      - deaths_80_or_more_black
+      - count_unknown_hispanic
+      - tested_unknown_hispanic
+      - deaths_unknown_hispanic
+      - count_less_than_20_hispanic
+      - tested_less_than_20_hispanic
+      - deaths_less_than_20_hispanic
+      - count_20_to_29_hispanic
+      - tested_20_to_29_hispanic
+      - deaths_20_to_29_hispanic
+      - count_30_to_39_hispanic
+      - tested_30_to_39_hispanic
+      - deaths_30_to_39_hispanic
+      - count_40_to_49_hispanic
+      - tested_40_to_49_hispanic
+      - deaths_40_to_49_hispanic
+      - count_50_to_59_hispanic
+      - tested_50_to_59_hispanic
+      - deaths_50_to_59_hispanic
+      - count_60_to_69_hispanic
+      - tested_60_to_69_hispanic
+      - deaths_60_to_69_hispanic
+      - count_70_to_79_hispanic
+      - tested_70_to_79_hispanic
+      - deaths_70_to_79_hispanic
+      - count_80_or_more_hispanic
+      - tested_80_or_more_hispanic
+      - deaths_80_or_more_hispanic
+      - count_unknown_leftblank
+      - tested_unknown_leftblank
+      - deaths_unknown_leftblank
+      - count_less_than_20_leftblank
+      - tested_less_than_20_leftblank
+      - deaths_less_than_20_leftblank
+      - count_20_to_29_leftblank
+      - tested_20_to_29_leftblank
+      - deaths_20_to_29_leftblank
+      - count_30_to_39_leftblank
+      - tested_30_to_39_leftblank
+      - deaths_30_to_39_leftblank
+      - count_40_to_49_leftblank
+      - tested_40_to_49_leftblank
+      - deaths_40_to_49_leftblank
+      - count_50_to_59_leftblank
+      - tested_50_to_59_leftblank
+      - deaths_50_to_59_leftblank
+      - count_60_to_69_leftblank
+      - tested_60_to_69_leftblank
+      - deaths_60_to_69_leftblank
+      - count_70_to_79_leftblank
+      - tested_70_to_79_leftblank
+      - deaths_70_to_79_leftblank
+      - count_80_or_more_leftblank
+      - tested_80_or_more_leftblank
+      - deaths_80_or_more_leftblank
+      - count_unknown_nhpi
+      - tested_unknown_nhpi
+      - deaths_unknown_nhpi
+      - count_less_than_20_nhpi
+      - tested_less_than_20_nhpi
+      - deaths_less_than_20_nhpi
+      - count_20_to_29_nhpi
+      - tested_20_to_29_nhpi
+      - deaths_20_to_29_nhpi
+      - count_30_to_39_nhpi
+      - tested_30_to_39_nhpi
+      - deaths_30_to_39_nhpi
+      - count_40_to_49_nhpi
+      - tested_40_to_49_nhpi
+      - deaths_40_to_49_nhpi
+      - count_50_to_59_nhpi
+      - tested_50_to_59_nhpi
+      - deaths_50_to_59_nhpi
+      - count_60_to_69_nhpi
+      - tested_60_to_69_nhpi
+      - deaths_60_to_69_nhpi
+      - count_70_to_79_nhpi
+      - tested_70_to_79_nhpi
+      - deaths_70_to_79_nhpi
+      - count_80_or_more_nhpi
+      - tested_80_or_more_nhpi
+      - deaths_80_or_more_nhpi
+      - count_unknown_other
+      - tested_unknown_other
+      - deaths_unknown_other
+      - count_less_than_20_other
+      - tested_less_than_20_other
+      - deaths_less_than_20_other
+      - count_20_to_29_other
+      - tested_20_to_29_other
+      - deaths_20_to_29_other
+      - count_30_to_39_other
+      - tested_30_to_39_other
+      - deaths_30_to_39_other
+      - count_40_to_49_other
+      - tested_40_to_49_other
+      - deaths_40_to_49_other
+      - count_50_to_59_other
+      - tested_50_to_59_other
+      - deaths_50_to_59_other
+      - count_60_to_69_other
+      - tested_60_to_69_other
+      - deaths_60_to_69_other
+      - count_70_to_79_other
+      - tested_70_to_79_other
+      - deaths_70_to_79_other
+      - count_80_or_more_other
+      - tested_80_or_more_other
+      - deaths_80_or_more_other
+      - count_unknown_white
+      - tested_unknown_white
+      - deaths_unknown_white
+      - count_less_than_20_white
+      - tested_less_than_20_white
+      - deaths_less_than_20_white
+      - count_20_to_29_white
+      - tested_20_to_29_white
+      - deaths_20_to_29_white
+      - count_30_to_39_white
+      - tested_30_to_39_white
+      - deaths_30_to_39_white
+      - count_40_to_49_white
+      - tested_40_to_49_white
+      - deaths_40_to_49_white
+      - count_50_to_59_white
+      - tested_50_to_59_white
+      - deaths_50_to_59_white
+      - count_60_to_69_white
+      - tested_60_to_69_white
+      - deaths_60_to_69_white
+      - count_70_to_79_white
+      - tested_70_to_79_white
+      - deaths_70_to_79_white
+      - count_80_or_more_white
+      - tested_80_or_more_white
+      - deaths_80_or_more_white
+      filter: {}
+- table:
+    schema: public
+    name: state_gender_counts
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - date
+      - count_female
+      - tested_female
+      - deaths_female
+      - count_male
+      - tested_male
+      - deaths_male
+      - count_unknownleftblank
+      - tested_unknownleftblank
+      - deaths_unknownleftblank
+      filter: {}
+- table:
+    schema: public
+    name: state_probable_case_counts
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - date
+      - probable_cases
+      - probable_deaths
+      filter: {}
+- table:
+    schema: public
+    name: state_race_counts
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - date
+      - count_aian
+      - tested_aian
+      - deaths_aian
+      - count_asian
+      - tested_asian
+      - deaths_asian
+      - count_black
+      - tested_black
+      - deaths_black
+      - count_hispanic
+      - tested_hispanic
+      - deaths_hispanic
+      - count_leftblank
+      - tested_leftblank
+      - deaths_leftblank
+      - count_nhpi
+      - tested_nhpi
+      - deaths_nhpi
+      - count_other
+      - tested_other
+      - deaths_other
+      - count_white
+      - tested_white
+      - deaths_white
+      filter: {}
+- table:
+    schema: public
+    name: state_recovery_data
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - report_date
+      - sample_surveyed
+      - recovered_cases
+      - recovered_and_deceased_cases
+      - recovery_rate
+      filter: {}
+- table:
+    schema: public
+    name: state_testing_results
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - date
+      - total_tested
+      - confirmed_cases
+      - deaths
+      filter: {}
+- table:
+    schema: public
     name: zipcode_date_age_counts
   select_permissions:
   - role: anonymous
