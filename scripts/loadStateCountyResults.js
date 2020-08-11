@@ -3,12 +3,15 @@ const { query } = require("../lib/api");
 
 const ENDPOINT = "https://www.dph.illinois.gov/sitefiles/COVIDTestResults.json";
 
-const stateDemographicsQuery = `
+const stateCountyResultsQuery = `
   mutation(
     $raceCounts: state_race_counts_insert_input!,
     $ageCounts: state_age_counts_insert_input!,
     $ageRaceCounts: state_age_race_counts_insert_input!,
-    $genderCounts: state_gender_counts_insert_input!
+    $genderCounts: state_gender_counts_insert_input!,
+    $stateResults: [state_testing_results_insert_input!]!,
+    $stateRecovery: [state_recovery_data_insert_input!]!,
+    $probableCaseCounts: state_probable_case_counts_insert_input!
   ) {
     insert_state_race_counts(
       objects: [$raceCounts],
@@ -46,6 +49,33 @@ const stateDemographicsQuery = `
     ) {
       affected_rows
     }
+    insert_state_testing_results(
+      objects: $values,
+      on_conflict: {
+        constraint: state_testing_results_date_key,
+        update_columns: [total_tested, confirmed_cases, deaths]
+      }
+    ) {
+      affected_rows
+    }
+    insert_state_recovery_data(
+      objects: $values,
+      on_conflict: {
+        constraint: state_recovery_data_report_date_key,
+        update_columns: [sample_surveyed, recovered_cases, recovered_and_deceased_cases, recovery_rate]
+      }
+    ) {
+      affected_rows
+    }
+    insert_state_probable_case_counts(
+      objects: [$values],
+      on_conflict: {
+        constraint: state_probable_case_counts_date_key,
+        update_columns: [probable_cases, probable_deaths]
+      }
+    ) {
+      affected_rows
+    }
   }
 `;
 
@@ -57,48 +87,6 @@ const countyCountsQuery = `
       on_conflict: {
         constraint: county_testing_results_county_date_key,
         update_columns: [confirmed_cases, deaths, total_tested]
-      }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
-const stateResultQuery = `
-  mutation($values: [state_testing_results_insert_input!]!) {
-    insert_state_testing_results(
-      objects: $values,
-      on_conflict: {
-        constraint: state_testing_results_date_key,
-        update_columns: [total_tested, confirmed_cases, deaths]
-      }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
-const stateRecoveryQuery = `
-  mutation($values: [state_recovery_data_insert_input!]!) {
-    insert_state_recovery_data(
-      objects: $values,
-      on_conflict: {
-        constraint: state_recovery_data_report_date_key,
-        update_columns: [sample_surveyed, recovered_cases, recovered_and_deceased_cases, recovery_rate]
-      }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
-const probableCaseQuery = `
-  mutation($values: state_probable_case_counts_insert_input!) {
-    insert_state_probable_case_counts(
-      objects: [$values],
-      on_conflict: {
-        constraint: state_probable_case_counts_date_key,
-        update_columns: [probable_cases, probable_deaths]
       }
     ) {
       affected_rows
@@ -241,14 +229,6 @@ const transformProbableCaseCounts = ({
   probable_deaths,
 }) => ({ date: transformDate(date), probable_cases, probable_deaths });
 
-const runQuery = async ({ queryStr, variables }) =>
-  query({ query: queryStr, variables }).then(console.log).catch(console.err);
-
-const updateData = async (queries) =>
-  await Promise.all(
-    queries.map(([queryStr, variables]) => runQuery({ queryStr, variables }))
-  );
-
 loadData(ENDPOINT).then(
   ({
     date,
@@ -276,14 +256,17 @@ loadData(ENDPOINT).then(
     const stateRecovery = stateRecoveryValues.map(transformStateRecovery);
     const probableCaseCounts = transformProbableCaseCounts(probableCaseValues);
 
-    updateData([
-      [
-        stateDemographicsQuery,
-        { raceCounts, ageCounts, ageRaceCounts, genderCounts },
-      ],
-      [stateResultQuery, { values: stateResults }],
-      [stateRecoveryQuery, { values: stateRecovery }],
-      [probableCaseQuery, { values: probableCaseCounts }],
-    ]);
+    return query({
+      query: stateCountyResultsQuery,
+      variables: {
+        raceCounts,
+        ageCounts,
+        ageRaceCounts,
+        genderCounts,
+        stateResults,
+        stateRecovery,
+        probableCaseCounts,
+      },
+    });
   }
 );
