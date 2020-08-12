@@ -564,3 +564,46 @@
       columns:
       - zipcode
       filter: {}
+- table:
+    schema: public
+    name: census_geographies
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - geoid
+      - geography
+      - name
+      - city
+      - county
+      - zcta
+      - population
+      - age
+      - race
+      - geom
+      filter: {}
+- table:
+    schema: public
+    name: county_testing_results
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - date
+      - county
+      - confirmed_cases
+      - deaths
+      - total_tested
+      - census_geography_id
+      filter: {}
+  object_relationships:
+  - name: census
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: census_geographies
+        column_mapping:
+          census_geography_id: id

@@ -1,5 +1,7 @@
+const fs = require("fs");
 const fetch = require("node-fetch");
 const { query } = require("../lib/api");
+const { STATE, COUNTY, PLACE } = require("../lib/constants");
 
 const ENDPOINT = "https://www.dph.illinois.gov/sitefiles/COVIDTestResults.json";
 
@@ -12,6 +14,7 @@ const stateCountyResultsQuery = `
     $stateResults: [state_testing_results_insert_input!]!,
     $stateRecovery: [state_recovery_data_insert_input!]!,
     $probableCaseCounts: state_probable_case_counts_insert_input!
+    $countyResults: [county_testing_results_insert_input!]!,
   ) {
     insert_state_race_counts(
       objects: [$raceCounts],
@@ -50,7 +53,7 @@ const stateCountyResultsQuery = `
       affected_rows
     }
     insert_state_testing_results(
-      objects: $values,
+      objects: $stateResults,
       on_conflict: {
         constraint: state_testing_results_date_key,
         update_columns: [total_tested, confirmed_cases, deaths]
@@ -59,7 +62,7 @@ const stateCountyResultsQuery = `
       affected_rows
     }
     insert_state_recovery_data(
-      objects: $values,
+      objects: $stateRecovery,
       on_conflict: {
         constraint: state_recovery_data_report_date_key,
         update_columns: [sample_surveyed, recovered_cases, recovered_and_deceased_cases, recovery_rate]
@@ -68,7 +71,7 @@ const stateCountyResultsQuery = `
       affected_rows
     }
     insert_state_probable_case_counts(
-      objects: [$values],
+      objects: [$probableCaseCounts],
       on_conflict: {
         constraint: state_probable_case_counts_date_key,
         update_columns: [probable_cases, probable_deaths]
@@ -76,20 +79,24 @@ const stateCountyResultsQuery = `
     ) {
       affected_rows
     }
-  }
-`;
-
-// TODO: Ignoring for now, pending updated Census loading
-const countyCountsQuery = `
-  mutation($values: [county_testing_results_insert_input!]!) {
     insert_county_testing_results(
-      objects: $values,
+      objects: $countyResults,
       on_conflict: {
-        constraint: county_testing_results_county_date_key,
-        update_columns: [confirmed_cases, deaths, total_tested]
+        constraint: county_testing_results_date_county_key,
+        update_columns: [confirmed_cases, deaths, total_tested, census_geography_id]
       }
     ) {
       affected_rows
+    }
+  }
+`;
+
+const censusIdQuery = `
+  query {
+    census_geographies {
+      id
+      name
+      geography
     }
   }
 `;
@@ -188,15 +195,6 @@ const transformDemographics = ({ age, race, gender }) => [
   })),
 ];
 
-// TODO: Add date into this, how is GEOID pulled?
-// TODO: How are we using GEOID for Cook County without Chicago?
-const transformCounty = ({
-  County: county,
-  confirmed_cases,
-  deaths,
-  total_tested,
-}) => ({ county, confirmed_cases, deaths, total_tested });
-
 const transformStateResults = ({
   testDate,
   total_tested,
@@ -227,46 +225,91 @@ const transformProbableCaseCounts = ({
   LastUpdatedDate: date,
   probable_cases,
   probable_deaths,
-}) => ({ date: transformDate(date), probable_cases, probable_deaths });
+}) => ({
+  date: transformDate(date),
+  probable_cases,
+  probable_deaths,
+});
 
-loadData(ENDPOINT).then(
-  ({
+const transformCounty = ({
+  County: county,
+  confirmed_cases,
+  deaths,
+  total_tested,
+}) => ({ county, confirmed_cases, deaths, total_tested });
+
+const processCountyCensusGeographyId = ({ county }, censusIdMap) => {
+  if (county === "Illinois") {
+    return censusIdMap[`${STATE}${county}`];
+  } else if (county === "Chicago") {
+    return censusIdMap[`${PLACE}${county}`];
+  } else {
+    return censusIdMap[`${COUNTY}${county}`];
+  }
+};
+
+async function loadStateCountyResults() {
+  const {
+    data: { census_geographies: censusGeographies },
+  } = await query({ query: censusIdQuery });
+
+  const censusIdMap = censusGeographies.reduce(
+    (acc, { name, geography, id }) => ({
+      ...acc,
+      [`${geography}${name}`]: id,
+    }),
+    {}
+  );
+
+  const {
     date,
     demographics: { age, race, gender },
     countyValues,
     stateResultValues,
     stateRecoveryValues,
     probableCaseValues,
-  }) => {
-    const demographicCounts = transformDemographics({ age, race, gender });
-    const raceCounts = demographicCounts
-      .filter(({ age_group, race, gender }) => !!race && !(age_group || gender))
-      .reduce(flattenDemographics, { date });
-    const ageCounts = demographicCounts
-      .filter(({ age_group, race, gender }) => !!age_group && !(race || gender))
-      .reduce(flattenDemographics, { date });
-    const ageRaceCounts = demographicCounts
-      .filter(({ age_group, race, gender }) => age_group && race && !gender)
-      .reduce(flattenDemographics, { date });
-    const genderCounts = demographicCounts
-      .filter(({ age_group, race, gender }) => gender && !(age_group || race))
-      .reduce(flattenDemographics, { date });
+  } = await loadData(ENDPOINT);
 
-    const stateResults = stateResultValues.map(transformStateResults);
-    const stateRecovery = stateRecoveryValues.map(transformStateRecovery);
-    const probableCaseCounts = transformProbableCaseCounts(probableCaseValues);
+  const demographicCounts = transformDemographics({ age, race, gender });
+  const demographicCountBase = { date };
+  const raceCounts = demographicCounts
+    .filter(({ age_group, race, gender }) => !!race && !(age_group || gender))
+    .reduce(flattenDemographics, demographicCountBase);
+  const ageCounts = demographicCounts
+    .filter(({ age_group, race, gender }) => !!age_group && !(race || gender))
+    .reduce(flattenDemographics, demographicCountBase);
+  const ageRaceCounts = demographicCounts
+    .filter(({ age_group, race, gender }) => age_group && race && !gender)
+    .reduce(flattenDemographics, demographicCountBase);
+  const genderCounts = demographicCounts
+    .filter(({ age_group, race, gender }) => gender && !(age_group || race))
+    .reduce(flattenDemographics, demographicCountBase);
 
-    return query({
-      query: stateCountyResultsQuery,
-      variables: {
-        raceCounts,
-        ageCounts,
-        ageRaceCounts,
-        genderCounts,
-        stateResults,
-        stateRecovery,
-        probableCaseCounts,
-      },
-    });
-  }
-);
+  const stateResults = stateResultValues.map(transformStateResults);
+  const stateRecovery = stateRecoveryValues.map(transformStateRecovery);
+  const probableCaseCounts = transformProbableCaseCounts(probableCaseValues);
+
+  const countyResults = countyValues.map(transformCounty).map((county) => ({
+    ...county,
+    census_geography_id: processCountyCensusGeographyId(county, censusIdMap),
+    date,
+  }));
+
+  await query({
+    query: stateCountyResultsQuery,
+    variables: {
+      raceCounts,
+      ageCounts,
+      ageRaceCounts,
+      genderCounts,
+      stateResults,
+      stateRecovery,
+      probableCaseCounts,
+      countyResults,
+    },
+  })
+    .then(console.log)
+    .catch(console.error);
+}
+
+loadStateCountyResults();
