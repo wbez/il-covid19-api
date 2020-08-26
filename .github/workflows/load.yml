@@ -27,3 +27,8 @@ jobs:
       env:
         HASURA_API_SECRET: ${{ secrets.HASURA_API_SECRET }}
         HASURA_API_ENDPOINT: https://covid19-api.grupovisual.org/v1/graphql
+    - name: Refresh materialized views
+      run: npm run refresh_views
+      env:
+        HASURA_API_SECRET: ${{ secrets.HASURA_API_SECRET }}
+        HASURA_API_ENDPOINT: https://covid19-api.grupovisual.org/v1/graphql
