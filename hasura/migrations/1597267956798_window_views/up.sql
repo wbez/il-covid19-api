@@ -46,7 +46,7 @@ AS
     total_tested - lag(total_tested) OVER (PARTITION BY county ORDER BY date) AS total_tested_change,
     round(
         (
-            (total_tested - lag(total_tested) OVER (PARTITION BY county ORDER BY date))::numeric / lag(total_tested) OVER (ORDER BY date)
+            (total_tested - lag(total_tested) OVER (PARTITION BY county ORDER BY date))::numeric / lag(total_tested) OVER (PARTITION BY county ORDER BY date)
         ) * 100,
         2
     ) AS total_tested_change_pct,
