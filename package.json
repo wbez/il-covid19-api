@@ -8,6 +8,7 @@
     "load_state_county": "node ./scripts/loadStateCountyResults.js",
     "load_zip_geo": "node ./scripts/loadZIPCodeGeojson.js",
     "load_zips": "node ./scripts/loadZIPCodes.js",
+    "refresh_views": "node ./scripts/refreshViews.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
