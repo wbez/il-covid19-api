@@ -44,11 +44,11 @@ AS
         WHEN (
             (public.census_geographies.population->>'M')::numeric /
             (public.census_geographies.population->>'E')::numeric
-        ) < 0.1 THEN NULL
-        ELSE round(
-            confirmed_cases / (public.census_geographies.population->>'E')::numeric,
-            2
-        )
+        ) < 0.1 THEN round(
+                confirmed_cases / (public.census_geographies.population->>'E')::numeric,
+                2
+            )
+        ELSE NULL
         END
     AS cases_per_capita,
     CASE
@@ -56,11 +56,11 @@ AS
         WHEN (
             (public.census_geographies.population->>'M')::numeric /
             (public.census_geographies.population->>'E')::numeric
-        ) < 0.1 THEN NULL
-        ELSE round(
-            confirmed_cases / ((public.census_geographies.population->>'E')::numeric * 1000),
+        ) < 0.1 THEN round(
+            (confirmed_cases / (public.census_geographies.population->>'E')::numeric) * 1000,
             2
         )
+        ELSE NULL
         END
     AS cases_per_1000
     FROM public.zipcode_testing_results
