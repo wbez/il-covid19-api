@@ -7,7 +7,7 @@ const sourceURL = 'https://www.dph.illinois.gov/sitefiles/COVIDZip.json'
 
 zipQuery = `
     mutation($zipcodes: [zipcodes_insert_input!]!,
-             $counts: [zipcode_date_total_counts_insert_input!]!, 
+             $counts: [zipcode_testing_results_insert_input!]!, 
              $raceCounts: [zipcode_date_race_counts_insert_input!]!,
              $genderCounts: [zipcode_date_gender_counts_insert_input!]!,
              $ageCounts: [zipcode_date_age_counts_insert_input!]!) {
@@ -20,11 +20,11 @@ zipQuery = `
         ) {
             affected_rows
         }
-        insert_zipcode_date_total_counts(
+        insert_zipcode_testing_results(
             objects: $counts,  
             on_conflict: {
-                constraint: zipcode_date_total_counts_zipcode_date_key,
-                update_columns: [confirmed_cases, total_tested]
+                constraint: zipcode_testing_results_date_zipcode_key,
+                update_columns: [confirmed_cases, total_tested, census_geography_id]
             }
         ) {
             affected_rows
@@ -57,7 +57,16 @@ zipQuery = `
             affected_rows
         }
     }
-`
+`;
+
+const censusIdQuery = `
+  query {
+    census_geographies(where: {geography: {_eq: "zcta"}}) {
+      id
+      geoid
+    }
+  }
+`;
 
 function flattenRaceDemographics(accumulator, demographic) {
     const slug = slugify(demographic.description, { replacement: '', strict: true, lower: true });
@@ -86,7 +95,19 @@ function flattenAgeDemographics(accumulator, demographic) {
 }
 
 async function loadDay(zipData) {
-    const updatedDate = `${zipData.LastUpdateDate.year}-${zipData.LastUpdateDate.month}-${zipData.LastUpdateDate.day}`;
+  const {
+    data: { census_geographies: censusGeographies },
+  } = await query({ query: censusIdQuery });
+
+  const censusIdMap = censusGeographies.reduce(
+    (acc, { geoid, id }) => ({
+      ...acc,
+      [geoid]: id,
+    }),
+    {}
+  );
+
+  const updatedDate = `${zipData.LastUpdateDate.year}-${zipData.LastUpdateDate.month}-${zipData.LastUpdateDate.day}`;
 
     // Generate objects for all queries in one loop
     const objects = zipData.zip_values.map(d => {
@@ -98,6 +119,8 @@ async function loadDay(zipData) {
 
         // Flatten age
         const ageRow = d.demographics.age.reduce(flattenAgeDemographics, {});
+
+        const census_geography_id = censusIdMap[d.zip] || null
 
         return [
             {   // ZIP codes + date-ZIP junction
@@ -116,7 +139,8 @@ async function loadDay(zipData) {
                 zipcode: d.zip,
                 date: updatedDate,
                 confirmed_cases: d.confirmed_cases,
-                total_tested: d.total_tested
+                total_tested: d.total_tested,
+                census_geography_id,
             },
             {   // ZIP code date counts for race groups
                 zipcode: d.zip,

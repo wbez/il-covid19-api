@@ -1,0 +1,1 @@
+DROP MATERIALIZED VIEW public.zipcode_testing_results_change;

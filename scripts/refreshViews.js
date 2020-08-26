@@ -6,6 +6,7 @@ dotenv.config();
 const MATERIALIZED_VIEWS = [
   "public.county_testing_results_change",
   "public.state_testing_results_change",
+  "public.zipcode_testing_results_change",
 ];
 
 async function refreshMaterializedViews() {

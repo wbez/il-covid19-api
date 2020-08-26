@@ -585,6 +585,29 @@
       filter: {}
 - table:
     schema: public
+    name: zipcode_testing_results
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - date
+      - zipcode
+      - confirmed_cases
+      - total_tested
+      - census_geography_id
+      filter: {}
+  object_relationships:
+  - name: census
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: census_geographies
+        column_mapping:
+          census_geography_id: id
+- table:
+    schema: public
     name: county_testing_results
   select_permissions:
   - role: anonymous
@@ -655,4 +678,34 @@
       - deaths
       - deaths_change
       - deaths_change_pct
+      filter: {}
+- table:
+    schema: public
+    name: zipcode_testing_results_change
+  object_relationships:
+  - name: census
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: census_geographies
+        column_mapping:
+          census_geography_id: id
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - date
+      - zipcode
+      - census_geography_id
+      - total_tested
+      - total_tested_change
+      - total_tested_change_pct
+      - confirmed_cases
+      - confirmed_cases_change
+      - confirmed_cases_change_pct
+      - pct_population_moe
+      - below_moe_threshold
+      - cases_per_capita
+      - cases_per_1000
       filter: {}
