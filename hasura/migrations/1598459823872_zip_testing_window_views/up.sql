@@ -32,7 +32,7 @@ AS
     AS pct_population_moe,
     CASE
         WHEN public.census_geographies.id IS NULL
-        THEN TRUE
+        THEN FALSE
         ELSE (
             (public.census_geographies.population->>'M')::numeric /
             (public.census_geographies.population->>'E')::numeric
