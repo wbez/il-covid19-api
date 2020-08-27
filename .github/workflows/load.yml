@@ -1,9 +1,9 @@
-name: Load latest ZIP data
+name: Load latest data
 
 on:
   # Trigger at 15 past, 35 page, and 45 past
   schedule:
-    - cron: '15,35,45 * * * *'
+    - cron: "15,35,45 * * * *"
   push:
     branches:
       - master
@@ -11,24 +11,21 @@ on:
 jobs:
   load:
     runs-on: ubuntu-latest
+    env:
+      HASURA_API_SECRET: ${{ secrets.HASURA_API_SECRET }}
+      HASURA_API_ENDPOINT: https://covid19-api.grupovisual.org/v1/graphql
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up NodeJS                                        
-      uses: actions/setup-node@v2-beta
-      with:
-        node-version: '12'                                      
-    - name: Install dependencies
-      run: |
-        npm install
-    - name: Run loader
-      run: |
-        npm run load_zips
-      env:
-        HASURA_API_SECRET: ${{ secrets.HASURA_API_SECRET }}
-        HASURA_API_ENDPOINT: https://covid19-api.grupovisual.org/v1/graphql
-    - name: Refresh materialized views
-      run: npm run refresh_views
-      env:
-        HASURA_API_SECRET: ${{ secrets.HASURA_API_SECRET }}
-        HASURA_API_ENDPOINT: https://covid19-api.grupovisual.org/v1/graphql
+      - uses: actions/checkout@v2
+      - name: Set up NodeJS
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: "12"
+      - name: Install dependencies
+        run: npm install
+      - name: Load state and county data
+        run: npm run load_state_county
+      - name: Load ZIP codes
+        run: npm run load_zips
+      - name: Refresh materialized views
+        run: npm run refresh_views
