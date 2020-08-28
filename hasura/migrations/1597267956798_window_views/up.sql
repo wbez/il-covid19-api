@@ -44,20 +44,30 @@ AS
     census_geography_id,
     total_tested,
     total_tested - lag(total_tested) OVER (PARTITION BY county ORDER BY date) AS total_tested_change,
-    round(
-        (
-            (total_tested - lag(total_tested) OVER (PARTITION BY county ORDER BY date))::numeric / lag(total_tested) OVER (PARTITION BY county ORDER BY date)
-        ) * 100,
-        2
-    ) AS total_tested_change_pct,
+    CASE
+        WHEN lag(total_tested) OVER (PARTITION BY county ORDER BY date) = 0
+        THEN 0::numeric
+        ELSE round(
+            (
+                (total_tested - lag(total_tested) OVER (PARTITION BY county ORDER BY date))::numeric / lag(total_tested) OVER (PARTITION BY county ORDER BY date)
+            ) * 100,
+            2
+        )
+        END
+    AS total_tested_change_pct,
     confirmed_cases,
     confirmed_cases - lag(confirmed_cases) OVER (PARTITION BY county ORDER BY date) AS confirmed_cases_change,
-    round(
-        (
-            (confirmed_cases - lag(confirmed_cases) OVER (PARTITION BY county ORDER BY date))::numeric / lag(confirmed_cases) OVER (PARTITION BY county ORDER BY date)
-        ) * 100,
-        2
-    ) AS confirmed_cases_change_pct,
+    CASE
+        WHEN lag(confirmed_cases) OVER (PARTITION BY county ORDER BY date) = 0
+        THEN 0::numeric
+        ELSE round(
+            (
+                (confirmed_cases - lag(confirmed_cases) OVER (PARTITION BY county ORDER BY date))::numeric / lag(confirmed_cases) OVER (PARTITION BY county ORDER BY date)
+            ) * 100,
+            2
+        )
+        END
+    AS confirmed_cases_change_pct,
     confirmed_cases - deaths AS confirmed_cases_minus_deaths,
     deaths,
     deaths - lag(deaths) OVER (PARTITION BY county ORDER BY date) AS deaths_change,
